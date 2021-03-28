@@ -36,7 +36,7 @@ function App() {
     <div className="App">
       <Header />
       <main>
-        <Router>
+        <Router basename={process.env.PUBLIC_URL}>
           <Switch>
             <Route exact path="/" component={Landing} />
             <Route path="/login" component={Login} />
