@@ -12,16 +12,19 @@ const Login = ({ history }) => {
     };
   }, [loginSuccess]);
 
-  const isPwRight = (id, pw) => {
-    return pw === JSON.parse(localStorage.getItem(id)).password;
-  };
-
   const loginBtnClickHandler = (e) => {
     e.preventDefault();
     try {
       if (id && pw) {
-        const pwFromDb = localStorage.getItem(id);
-        setLoginSuccess(pwFromDb && isPwRight(id, pw.toString()));
+        const pwFromDb = JSON.parse(
+          localStorage.getItem(id)
+        ).password.toString();
+
+        if (pwFromDb && pwFromDb === pw) {
+          setLoginSuccess(true);
+        } else {
+          console.log("다시 입력하세요.");
+        }
       } else {
         console.log("빠짐없이 입력해주세요");
       }
