@@ -1,56 +1,46 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import Input from "../components/Input";
 
 const Login = ({ history }) => {
   const [id, setId] = useState("");
-  const [password, setPassword] = useState("");
-  const warning = document.querySelector(".warning");
+  const [pw, setPw] = useState("");
+  const [loginSuccess, setLoginSuccess] = useState(false);
 
-  const idChangeHandler = (e) => {
-    setId(e.target.value);
+  useEffect(() => {
+    return () => {
+      history.push(`/main?id=${id}`);
+    };
+  }, [loginSuccess]);
+
+  const isPwRight = (id, pw) => {
+    return pw === JSON.parse(localStorage.getItem(id)).password;
   };
 
-  const passwordChangeHandler = (e) => {
-    setPassword(e.target.value);
-  };
-
-  const loginConfirm = (e) => {
+  const loginBtnClickHandler = (e) => {
     e.preventDefault();
-
     try {
-      const registeredPassword = JSON.parse(localStorage.getItem(id)).password;
-      if (password === registeredPassword) {
-        history.push(`/main?id=${id}`);
+      if (id && pw) {
+        const pwFromDb = localStorage.getItem(id);
+        setLoginSuccess(pwFromDb && isPwRight(id, pw.toString()));
       } else {
-        warning.innerText = "비밀번호가 틀렸습니다.";
-        setPassword("");
+        console.log("빠짐없이 입력해주세요");
       }
     } catch (e) {
-      warning.innerText = "존재하지 않는 아이디입니다.";
-      setId("");
-      setPassword("");
+      console.log(e);
     }
   };
 
   return (
     <form action="">
       <h1>Log in</h1>
-      <input
-        type="text"
-        name=""
-        id=""
-        placeholder="id"
-        value={id}
-        onChange={idChangeHandler}
-      />
-      <input
+      <Input type="text" placeholder="id" value={id} changeHandler={setId} />
+      <Input
         type="password"
-        name=""
-        id=""
         placeholder="password"
-        value={password}
-        onChange={passwordChangeHandler}
+        value={pw}
+        changeHandler={setPw}
       />
-      <button onClick={loginConfirm}>log in</button>
+      <button onClick={loginBtnClickHandler}>log in</button>
       <p className="warning"></p>
     </form>
   );
